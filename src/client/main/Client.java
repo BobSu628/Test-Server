@@ -23,6 +23,7 @@ public class Client implements Runnable{
     private UUID uuid;
     private String playerName;
     private NetPlayer player;
+    //private long time;
 
     private Socket socket;
     private ObjectOutputStream out;
@@ -64,6 +65,7 @@ public class Client implements Runnable{
                     }else if(receivedPacket instanceof ClientPlayerAcceptedPacket){
                         ClientPlayerAcceptedPacket packet = (ClientPlayerAcceptedPacket) receivedPacket;
                         game.initOtherPlayers(packet.players, packet.playerNames);
+                        //this.time = packet.time;
                         break;
                     }
                 }catch (IOException e){
@@ -123,7 +125,6 @@ public class Client implements Runnable{
         double amountOfTicks = 60.0;
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
-        long pre = System.currentTimeMillis();
         running = true;
 
         while (running){
@@ -131,31 +132,30 @@ public class Client implements Runnable{
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
-            //
+
             while (delta >= 1) {
+                //receive
+                try{
+                    Object data = in.readObject();
+                    listener.received(data);
+
+                }catch (ClassNotFoundException e){
+                    e.printStackTrace();
+                }catch (SocketException e){
+                    close();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+
+                //send
+                sendObject(new ServerPlayerUpdatePacket(extractParameters(player)));
                 tick();
                 delta--;
             }
-            if (running) render();
 
-            long cur = System.currentTimeMillis();
-            if (cur - pre >= 5) {
-                sendObject(new ServerPlayerUpdatePacket(extractParameters(player)));
-                //System.out.println("FPS: " + frames);
-                //frames = 0;
-            }
-
-            try{
-
-                Object data = in.readObject();
-                listener.received(data);
-
-            }catch (ClassNotFoundException e){
-                e.printStackTrace();
-            }catch (SocketException e){
-                close();
-            }catch (IOException e){
-                e.printStackTrace();
+            if (running) {
+                render();
+                //System.out.println("ok");
             }
         }
 

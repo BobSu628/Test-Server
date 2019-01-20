@@ -72,6 +72,16 @@ public class Connection implements Runnable {
                 lastTime = now;
                 //
                 while (delta >= 1) {
+                    //send
+                    //sendObject(out, new ClientPlayerUpdatePacket(Server.players));
+                    for(Map.Entry<UUID, UpdateParameters> entry: Server.players.entrySet()){
+                        sendObject(out, new ClientPlayerUpdatePacket(entry.getKey(), entry.getValue()));
+                        System.out.print(entry.getValue().x+", "+entry.getValue().y + "  ");
+                    }
+                    System.out.println();
+                    //System.out.println(Server.players.get(uuid).x+", "+Server.players.get(uuid).y);
+
+                    //receive
                     try{
                         Object data = in.readObject();
                         if(data instanceof ServerRemovePlayerPacket){
@@ -88,13 +98,7 @@ public class Connection implements Runnable {
                     }catch (ClassNotFoundException e){
                         e.printStackTrace();
                     }
-                    //sendObject(out, new ClientPlayerUpdatePacket(Server.players));
-                    for(Map.Entry<UUID, UpdateParameters> entry: Server.players.entrySet()){
-                        sendObject(out, new ClientPlayerUpdatePacket(entry.getKey(), entry.getValue()));
-                        System.out.print(entry.getValue().x+", "+entry.getValue().y + "  ");
-                    }
-                    System.out.println();
-                    //System.out.println(Server.players.get(uuid).x+", "+Server.players.get(uuid).y);
+
                     delta--;
                 }
                 //frames ++;
