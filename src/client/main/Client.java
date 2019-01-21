@@ -138,7 +138,6 @@ public class Client implements Runnable{
                 try{
                     Object data = in.readObject();
                     listener.received(data);
-
                 }catch (ClassNotFoundException e){
                     e.printStackTrace();
                 }catch (SocketException e){
@@ -187,7 +186,7 @@ public class Client implements Runnable{
     }
 
     public static UpdateParameters extractParameters(NetPlayer player){
-        return new UpdateParameters(player.getX(), player.getY(), player.getVelX(), player.getVelY());
+        return new UpdateParameters(player.getX(), player.getY());
     }
 
     public static void main(String[] args) {

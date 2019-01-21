@@ -33,19 +33,13 @@ public class EventListener {
         //received player updates
         else if(p instanceof ClientPlayerUpdatePacket){
             ClientPlayerUpdatePacket packet = (ClientPlayerUpdatePacket) p;
-
-            if(!playerHandler.myPlayer.getUUID().equals(packet.uuid)){
-                try{
-                    playerHandler.updatePlayer(packet.uuid, packet.parameters);
-                    //System.out.println(parameters.x+", "+parameters.y);
-                    //System.out.println("ok");
-                }catch (NullPointerException e){
-                    //e.printStackTrace();
+            System.out.println(packet.players.keySet().size());
+            for(UUID id: packet.players.keySet()){
+                if(!id.equals(playerHandler.myPlayer.getUUID())) {
+                    playerHandler.updatePlayer(id, packet.players.get(id));
                 }
             }
-
         }
-
     }
 
 }

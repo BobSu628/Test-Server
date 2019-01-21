@@ -15,7 +15,8 @@ public class Server implements Runnable{
     private static int PORT = 9001;
     //private int port;
     private ServerSocket serverSocket;
-    private boolean running = false;
+    //private Sender sender;
+    static boolean running = false;
 
     static HashMap<UUID, String> playerNames = new HashMap<>();
     static HashMap<UUID, UpdateParameters> players = new HashMap<>();
@@ -23,7 +24,7 @@ public class Server implements Runnable{
 
     public Server(int port){
         //this.port = port;
-
+        //sender = new Sender();
         try{
             serverSocket = new ServerSocket(port);
         }catch (IOException e){
@@ -32,8 +33,10 @@ public class Server implements Runnable{
     }
 
     public void start(){
-        new Thread(this).start();
         running = true;
+        new Thread(this).start();
+        new Thread(new Sender()).start();
+
     }
 
     @Override

@@ -31,8 +31,6 @@ public class PlayerHandler {
         NetPlayer player = players.get(uuid);
         player.setX(parameters.x);
         player.setY(parameters.y);
-        //player.setVelX(parameters.velX);
-        //player.setVelY(parameters.velY);
     }
 
     public void render(Graphics g) {
@@ -45,13 +43,12 @@ public class PlayerHandler {
 
     public void initOtherPlayers(HashMap<UUID, UpdateParameters> players, HashMap<UUID, String> names){
         for(Map.Entry<UUID, UpdateParameters> entry: players.entrySet()){
-            if(!entry.getKey().equals(this.myPlayer.getUUID())){
-                UUID uuid = entry.getKey();
-                UpdateParameters parameters = entry.getValue();
-                NetPlayer player = new NetPlayer(parameters.x, parameters.y, uuid, ID.Player, names.get(uuid));
-                //updatePlayer(player, parameters);
-                this.addPlayer(player);
-            }
+
+            UUID uuid = entry.getKey();
+            UpdateParameters parameters = entry.getValue();
+            NetPlayer player = new NetPlayer(parameters.x, parameters.y, uuid, ID.Player, names.get(uuid));
+            //updatePlayer(player, parameters);
+            this.addPlayer(player);
         }
     }
 
